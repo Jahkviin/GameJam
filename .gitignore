@@ -1,5 +1,6 @@
 # Ignore the virtual environment folder
 venv/
+gameJamVenv/
 
 # Ignore compiled Python files
 __pycache__/
