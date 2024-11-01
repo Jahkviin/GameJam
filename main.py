@@ -6,19 +6,33 @@ screen = pygame.display.set_mode((640, 480))
 clock = pygame.time.Clock()
 running = True
 
+player_pos = pygame.Vector2(screen.get_width()/2, screen.get_height()/2)
+dt = 0
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
     # Logic here
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_w]:
+        player_pos.y -= 300 * dt
+    if keys[pygame.K_s]:
+        player_pos.y += 300 * dt
+    if keys[pygame.K_a]:
+        player_pos.x -= 300 * dt
+    if keys[pygame.K_d]:
+        player_pos.x += 300 * dt
 
-    screen.fill("purple")
 
     # RENDER GAME HERE
+    screen.fill("purple")
+
+    pygame.draw.circle(screen, "red", player_pos, 40)
 
     pygame.display.flip()
 
-    clock.tick(20)  # limits FPS to 60
+    dt = clock.tick(20) / 1000  # limits FPS to 20 and gives the delta time (dt)
 
 pygame.quit()
