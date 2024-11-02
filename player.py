@@ -1,5 +1,7 @@
 import pygame
 import object
+import item
+import math
 
 class Player:
     global players #List of players
@@ -9,6 +11,7 @@ class Player:
         self.rect = rect
         self.velocity = pygame.Vector2(0,0)
         self.isGrounded = False
+        self.item = None
 
         self.speedLimit = 250 #The fastest speed players can move.
         self.speed = 80 #The acceleration of players.
@@ -49,6 +52,11 @@ class Player:
                     else:
                         self.rect.x = r.rect.x + r.rect.width
 
+            if (self.rect.x < 0):
+                self.rect.x = 0
+            elif (self.rect.x + self.rect.width > 640):
+                self.rect.x = 640 - self.rect.width
+
         #Gravity
         self.velocity.y += self.gravity
         self.rect.y += self.velocity.y * dt
@@ -71,6 +79,13 @@ class Player:
             self.velocity.y = 0
             self.rect.y = 400 - self.rect.height
 
+        #Item pickup logic
+        if (self.isDead == False):
+            for i in item.items:
+                if (math.hypot(self.rect.x + self.rect.width/2 - i.position.x, self.rect.y + self.rect.height/2 - i.position.y) < 15):
+                    self.item = i
+                    i.claimed()
+
         #Dead logic
         if (self.rect.y > 400):
             self.isDead = True
@@ -79,3 +94,8 @@ class Player:
         if (self.isGrounded):
             self.velocity.y -= self.jumpStrength
             self.isGrounded = False
+
+    def useItem(self):
+        if (self.isDead == False and self.item != None):
+            self.item.use()
+            self.item = None
