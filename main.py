@@ -1,5 +1,6 @@
 import pygame
 import player
+import object
 
 # pygame setup
 pygame.init()
@@ -9,10 +10,21 @@ running = True
 dt = 0
 
 #VHS stats
-vhsSpeed = 100
+vhsSpeed = 0
 
-player1 = player.Player(pygame.Vector2(screen.get_width()/2, screen.get_height()/2))
+object.Object(pygame.Rect(40, 380, 40, 40), vhsSpeed)
+object.Object(pygame.Rect(40, 380, 40, 40), vhsSpeed)
+object.Object(pygame.Rect(0, 360, 40, 40), vhsSpeed)
+player1 = player.Player(pygame.Rect(screen.get_width()/2, screen.get_height()/2, 8, 8))
 
+#Functions
+def changeVHSspeed(speed):
+    global vhsSpeed
+    vhsSpeed = speed
+    for o in object.objects:
+        o.changeVel(speed)
+
+#Gameloop
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -27,16 +39,28 @@ while running:
     if keys[pygame.K_w]:
         player1.jump()
 
+    #Temporary for testing
+    if keys[pygame.K_j]:
+        changeVHSspeed(-100)
+    if keys[pygame.K_k]:
+        changeVHSspeed(100)
+
+    for o in object.objects:
+        o.rect.x += vhsSpeed * dt
+
     for p in player.players:
         p.physicsUpdate(dt)
         if (p.isGrounded):
-            p.position.x += vhsSpeed * dt
-        
+            p.rect.x += vhsSpeed * dt
 
     # Render game here
     screen.fill("purple")
 
-    pygame.draw.circle(screen, "red", player1.position, 10)
+    for o in object.objects:
+        pygame.draw.rect(screen, "green", o.rect)
+
+    for p in player.players:
+        pygame.draw.rect(screen, p.color, p.rect)
 
     pygame.display.flip()
 
