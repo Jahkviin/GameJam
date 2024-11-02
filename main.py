@@ -15,7 +15,7 @@ clock = pygame.time.Clock()
 running = True
 dt = 0
 
-itemTypes = [type(item_reverse.Reverse), type(item_fastForward.FastForward), type(item_pause.Pause)]
+itemTypes = [item_reverse.Reverse, item_fastForward.FastForward, item_pause.Pause]
 itemSpawnTimer = 0
 itemSpawnRate = 6
 
@@ -26,8 +26,8 @@ vhsModTimer = 0
 vhsTapePos = 0
 vhsWheelRot = 0
 
-player1 = player.Player(pygame.Vector2(screen.get_width()/2, screen.get_height()/2), pygame.image.load(os.path.join("textures", "neo standing.png")))
-player2 = player.Player(pygame.Vector2(screen.get_width()/2, screen.get_height()/2), pygame.image.load(os.path.join("textures", "neo left.png")))
+player1 = player.Player(pygame.Vector2(screen.get_width()/2, screen.get_height()/2), pygame.image.load(os.path.join("textures", "neo standing.png")), pygame.image.load(os.path.join("textures", "neo left.png")), pygame.image.load(os.path.join("textures", "neo left up.png")))
+player2 = player.Player(pygame.Vector2(screen.get_width()/2, screen.get_height()/2), pygame.image.load(os.path.join("textures", "lara croft.png")), pygame.image.load(os.path.join("textures", "lara croft left.png")), pygame.image.load(os.path.join("textures", "lara croft left up.png")))
 
 #Temp
 object.Object(pygame.Vector2(90, 370), pygame.Vector2(70, 10), vhsSpeed)
@@ -114,7 +114,7 @@ while running:
     vhsTapePos += movement
     vhsWheelRot -= movement
 
-    changeVHSspeed(vhsSpeed + dt * 0.25)
+    changeVHSspeed(vhsSpeed + dt * 2)
 
     #Spawn items
     if (itemSpawnTimer > 0):
@@ -124,9 +124,9 @@ while running:
 
         type = itemTypes[random.randint(0, itemTypes.__len__()-1)]
         if (movement > 0):
-            newItem = type(pygame.Vector2(30, 400))
+            newItem = type(pygame.Vector2(30, 280 + random.randrange(0, 40)))
         else:
-            newItem = type(pygame.Vector2(600, 400))
+            newItem = type(pygame.Vector2(600, 280 + random.randrange(0, 40)))
 
     # Render game here
     screen.fill("purple")
@@ -149,7 +149,10 @@ while running:
         pygame.draw.rect(screen, "green", pygame.Rect(o.position, o.size))
 
     for p in player.players:
-        screen.blit(p.texture, pygame.Rect(p.position, p.size))
+        if (p.isFacingLeft):
+            screen.blit(p.texture, pygame.Rect(p.position, p.size))
+        else:
+            screen.blit(pygame.transform.flip(p.texture, True, False), pygame.Rect(p.position, p.size))
 
     for i in item.items:
         screen.blit(i.image, i.position - pygame.Vector2(5, 5))
@@ -165,9 +168,9 @@ while running:
     pygame.draw.rect(screen, "gray", pygame.Rect(600, 20, 35, 35))
 
     if (player1.item != None):
-        screen.blit(i.image, pygame.Vector2(20, 25))
+        screen.blit(player1.item.image, pygame.Vector2(20, 25))
     if (player2.item != None):
-        screen.blit(i.image, pygame.Vector2(605, 25))
+        screen.blit(player2.item.image, pygame.Vector2(605, 25))
 
     pygame.display.flip()
 

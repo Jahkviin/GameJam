@@ -7,12 +7,21 @@ class Player:
     global players #List of players
     players = []
 
-    def __init__ (self, position, texture):
+    def __init__ (self, position, textureForward, textureLeft, textureLeftUp):
         self.position = position
         self.size = pygame.Vector2(24, 36)
         self.velocity = pygame.Vector2(0,0)
         self.isGrounded = False
         self.item = None
+
+        self.isFacingLeft = False
+
+        self.textureForward = textureForward
+        self.textureLeft = textureLeft
+        self.textureLeftUp = textureLeftUp
+
+        self.jumpTimer = 0
+        self.jumpStun = 0.3 #Time between landing and jumping again
 
         self.speedLimit = 250 #The fastest speed players can move.
         self.speed = 80 #The acceleration of players.
@@ -23,7 +32,7 @@ class Player:
 
         self.isDead = False
 
-        self.texture = texture
+        self.texture = textureForward
 
         players.append(self)
     
@@ -87,14 +96,31 @@ class Player:
                     self.item = i
                     i.claimed()
 
+        if (self.isGrounded and self.jumpTimer > 0):
+            self.jumpTimer -= dt
+
         #Dead logic
         if (self.position.y > 400):
             self.isDead = True
 
+        #Sprite logic
+        if (self.isGrounded == False):
+            self.texture = self.textureLeftUp
+        elif (abs(self.velocity.x) > 1):
+            self.texture = self.textureLeft
+        else:
+            self.texture = self.textureForward
+        
+        if (self.velocity.x > 0):
+            self.isFacingLeft = False
+        else:
+            self.isFacingLeft = True
+
     def jump(self):
-        if (self.isGrounded):
+        if (self.isGrounded and self.jumpTimer <= 0):
             self.velocity.y -= self.jumpStrength
             self.isGrounded = False
+            self.jumpTimer = self.jumpStun
 
     def useItem(self, vhsSpeed):
         if (self.isDead == False and self.item != None):
