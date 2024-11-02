@@ -2,7 +2,7 @@ import pygame
 import player
 import object
 import os
-import math
+import item
 
 # pygame setup
 pygame.init()
@@ -16,11 +16,15 @@ vhsSpeed = 0
 vhsTapePos = 0
 vhsWheelRot = 0
 
+player1 = player.Player(pygame.Rect(screen.get_width()/2, screen.get_height()/2, 24, 36), "red")
+player2 = player.Player(pygame.Rect(screen.get_width()/2, screen.get_height()/2, 24, 36), "orange")
+
+#Temp
 object.Object(pygame.Rect(90, 370, 70, 10), vhsSpeed)
 object.Object(pygame.Rect(40, 350, 30, 30), vhsSpeed)
 object.Object(pygame.Rect(0, 330, 40, 40), vhsSpeed)
-player1 = player.Player(pygame.Rect(screen.get_width()/2, screen.get_height()/2, 8, 8), "red")
-player2 = player.Player(pygame.Rect(screen.get_width()/2, screen.get_height()/2, 8, 8), "orange")
+item.Item(pygame.Vector2(240, 370))
+item.Item(pygame.Vector2(470, 370))
 
 tapeTexture = pygame.image.load(os.path.join("textures", "vhs tape.png"))
 wheelTexture = pygame.image.load(os.path.join("textures", "vhs wheel.png"))
@@ -53,6 +57,8 @@ while running:
         player1.move(1)
     if keys[pygame.K_w]:
         player1.jump()
+    if keys[pygame.K_e]:
+        player1.useItem()
 
     if keys[pygame.K_LEFT]:
         player2.move(-1)
@@ -60,6 +66,8 @@ while running:
         player2.move(1)
     if keys[pygame.K_UP]:
         player2.jump()
+    if keys[pygame.K_RSHIFT]:
+        player2.useItem()
 
     #Temporary for testing
     if keys[pygame.K_j]:
@@ -75,6 +83,9 @@ while running:
         p.physicsUpdate(dt)
         if (p.isGrounded):
             p.rect.x += vhsSpeed * dt
+
+    for i in item.items:
+        i.position.x += vhsSpeed * dt
 
     vhsTapePos += vhsSpeed * dt
     vhsWheelRot -= vhsSpeed * dt
@@ -100,8 +111,17 @@ while running:
     for p in player.players:
         pygame.draw.rect(screen, p.color, p.rect)
 
+    for i in item.items:
+        pygame.draw.circle(screen, "black", i.position, 10) #Add powerup texture
+
     blitRotateCenter(screen, wheelTexture, pygame.Vector2(450, 390), vhsWheelRot)
     blitRotateCenter(screen, wheelTexture, pygame.Vector2(50, 390), vhsWheelRot)
+
+    #UI
+    if (player1.item != None):
+        pygame.draw.circle(screen, "black", pygame.Vector2(25, 25), 15) #Draw texture
+    if (player2.item != None):
+        pygame.draw.circle(screen, "black", pygame.Vector2(615, 25), 15) #Draw texture
 
     pygame.display.flip()
 
