@@ -4,6 +4,9 @@ import object
 import os
 import item
 import item_reverse
+import item_pause
+import item_fastForward
+import random
 
 # pygame setup
 pygame.init()
@@ -11,6 +14,10 @@ screen = pygame.display.set_mode((640, 480))
 clock = pygame.time.Clock()
 running = True
 dt = 0
+
+itemTypes = [type(item_reverse.Reverse), type(item_fastForward.FastForward), type(item_pause.Pause)]
+itemSpawnTimer = 0
+itemSpawnRate = 6
 
 #VHS stats
 vhsSpeed = 20
@@ -26,9 +33,10 @@ player2 = player.Player(pygame.Vector2(screen.get_width()/2, screen.get_height()
 object.Object(pygame.Vector2(90, 370), pygame.Vector2(70, 10), vhsSpeed)
 object.Object(pygame.Vector2(40, 350), pygame.Vector2(30, 30), vhsSpeed)
 object.Object(pygame.Vector2(0, 330), pygame.Vector2(40, 40), vhsSpeed)
-item_reverse.reverse(pygame.Vector2(240, 370))
-item_reverse.reverse(pygame.Vector2(470, 370))
+item_fastForward.FastForward(pygame.Vector2(240, 370))
+item_pause.Pause(pygame.Vector2(470, 370))
 
+#Textures
 tapeTexture = pygame.image.load(os.path.join("textures", "vhs tape.png"))
 wheelTexture = pygame.image.load(os.path.join("textures", "vhs wheel.png"))
 wheelHighlightTexture = pygame.image.load(os.path.join("textures", "vhs wheel highlight.png"))
@@ -101,12 +109,24 @@ while running:
             p.position.x += movement
 
     for i in item.items:
-        i.position.x += movement
+        i.position.x += movement * 0.5
 
     vhsTapePos += movement
     vhsWheelRot -= movement
 
     changeVHSspeed(vhsSpeed + dt * 0.25)
+
+    #Spawn items
+    if (itemSpawnTimer > 0):
+        itemSpawnTimer -= dt
+    else:
+        itemSpawnTimer = itemSpawnRate
+
+        type = itemTypes[random.randint(0, itemTypes.__len__()-1)]
+        if (movement > 0):
+            newItem = type(pygame.Vector2(30, 400))
+        else:
+            newItem = type(pygame.Vector2(600, 400))
 
     # Render game here
     screen.fill("purple")
