@@ -7,7 +7,7 @@ class Player:
     global players #List of players
     players = []
 
-    def __init__ (self, rect, color):
+    def __init__ (self, rect, texture):
         self.rect = rect
         self.velocity = pygame.Vector2(0,0)
         self.isGrounded = False
@@ -22,7 +22,7 @@ class Player:
 
         self.isDead = False
 
-        self.color = color
+        self.texture = texture
 
         players.append(self)
     

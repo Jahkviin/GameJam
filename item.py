@@ -6,6 +6,7 @@ class Item():
 
     def __init__(self, position):
         self.position = position
+        self.image = None
 
         items.append(self)
 
