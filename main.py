@@ -11,9 +11,18 @@ import random
 # pygame setup
 pygame.init()
 screen = pygame.display.set_mode((640, 480))
+pygame.display.set_caption("Tape jumpers")
 clock = pygame.time.Clock()
 running = True
 dt = 0
+font = pygame.font.SysFont('Arial', 50)
+
+#Match result
+resultTxt = None
+
+#Music
+pygame.mixer.music.load(os.path.join("gameJamSong1.mp3"))
+pygame.mixer.music.play(-1)
 
 #Items
 itemTypes = [item_reverse.Reverse, item_fastForward.FastForward, item_pause.Pause]
@@ -110,6 +119,15 @@ while running:
 
     changeVHSspeed(vhsSpeed + dt * 2)
 
+    #Check deaths
+    if (resultTxt == None):
+        if (player1.isDead and player2.isDead):
+            resultTxt = "Tie!"
+        elif (player1.isDead):
+            resultTxt = "Fala Froft won!"
+        elif(player2.isDead):
+            resultTxt = "Eno won!"
+
     #Spawn items
     if (itemSpawnTimer > 0):
         itemSpawnTimer -= dt
@@ -177,6 +195,9 @@ while running:
         screen.blit(player1.item.image, pygame.Vector2(20, 25))
     if (player2.item != None):
         screen.blit(player2.item.image, pygame.Vector2(605, 25))
+
+    if (resultTxt != None):
+        screen.blit(font.render(resultTxt, False, (0,0,0)), (250,150))
 
     pygame.display.flip()
 
