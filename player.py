@@ -99,9 +99,6 @@ class Player:
         if (self.isDead == False and self.item != None):
             vhsMod = self.item.use(vhsSpeed)
             self.item = None
-            if (type(vhsMod) == None):
-                return vhsSpeed
-            else:
-                return vhsMod
+            return vhsMod
         else:
-            return vhsSpeed
+            return None

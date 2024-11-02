@@ -9,4 +9,4 @@ class reverse(item.Item):
 
     def use(self, vhsSpeed):
         vhsSpeed = -vhsSpeed
-        return vhsSpeed
+        return pygame.Vector2(-1, 4)

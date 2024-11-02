@@ -13,7 +13,9 @@ running = True
 dt = 0
 
 #VHS stats
-vhsSpeed = 0
+vhsSpeed = 20
+modVHSspeed = 0
+vhsModTimer = 0
 vhsTapePos = 0
 vhsWheelRot = 0
 
@@ -60,7 +62,10 @@ while running:
     if keys[pygame.K_w]:
         player1.jump()
     if keys[pygame.K_e]:
-        vhsSpeed = player1.useItem(vhsSpeed)
+        result = player1.useItem(vhsSpeed)
+        if (result != None):
+            modVHSspeed = result.x
+            vhsModTimer = result.y
 
     if keys[pygame.K_LEFT]:
         player2.move(-1)
@@ -69,7 +74,10 @@ while running:
     if keys[pygame.K_UP]:
         player2.jump()
     if keys[pygame.K_RSHIFT]:
-        vhsSpeed = player2.useItem(vhsSpeed)
+        result = player2.useItem(vhsSpeed)
+        if (result != None):
+            modVHSspeed = result.x
+            vhsModTimer = result.y
 
     #Temporary for testing
     if keys[pygame.K_j]:
@@ -78,19 +86,25 @@ while running:
         changeVHSspeed(100)
 
     #Physics/movement and such
+    if (vhsModTimer <= 0):
+        movement = vhsSpeed * dt
+    else:
+        movement = vhsSpeed * modVHSspeed * dt
+        vhsModTimer -= dt
+
     for o in object.objects:
-        o.rect.x += vhsSpeed * dt
+        o.rect.x += movement
 
     for p in player.players:
         p.physicsUpdate(dt)
         if (p.isGrounded):
-            p.rect.x += vhsSpeed * dt
+            p.rect.x += movement
 
     for i in item.items:
-        i.position.x += vhsSpeed * dt
+        i.position.x += movement
 
-    vhsTapePos += vhsSpeed * dt
-    vhsWheelRot -= vhsSpeed * dt
+    vhsTapePos += movement
+    vhsWheelRot -= movement
 
     # Render game here
     screen.fill("purple")
