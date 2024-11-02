@@ -21,7 +21,7 @@ class Player:
         self.textureLeftUp = textureLeftUp
 
         self.jumpTimer = 0
-        self.jumpStun = 0.3 #Time between landing and jumping again
+        self.jumpStun = 0.1 #Time between landing and jumping again
 
         self.speedLimit = 250 #The fastest speed players can move.
         self.speed = 80 #The acceleration of players.
