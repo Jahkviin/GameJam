@@ -17,8 +17,8 @@ vhsSpeed = 0
 vhsTapePos = 0
 vhsWheelRot = 0
 
-player1 = player.Player(pygame.Rect(screen.get_width()/2, screen.get_height()/2, 24, 36), "red")
-player2 = player.Player(pygame.Rect(screen.get_width()/2, screen.get_height()/2, 24, 36), "orange")
+player1 = player.Player(pygame.Rect(screen.get_width()/2, screen.get_height()/2, 24, 36), pygame.image.load(os.path.join("textures", "neo standing.png")))
+player2 = player.Player(pygame.Rect(screen.get_width()/2, screen.get_height()/2, 24, 36), pygame.image.load(os.path.join("textures", "neo left.png")))
 
 #Temp
 object.Object(pygame.Rect(90, 370, 70, 10), vhsSpeed)
@@ -107,14 +107,16 @@ while running:
     pygame.draw.rect(screen, "purple", pygame.Rect(0, 380, 25, 100)) #BG
     pygame.draw.rect(screen, "purple", pygame.Rect(615, 380, 25, 100)) #BG
 
+    pygame.draw.rect(screen, "white", pygame.Rect(250, 430, 150, 200)) #White pad
+
     for o in object.objects:
         pygame.draw.rect(screen, "green", o.rect)
 
     for p in player.players:
-        pygame.draw.rect(screen, p.color, p.rect)
+        screen.blit(p.texture, p.rect)
 
     for i in item.items:
-        pygame.draw.circle(screen, "black", i.position, 10) #Add powerup texture
+        screen.blit(i.image, i.position - pygame.Vector2(5, 5))
 
     blitRotateCenter(screen, wheelTexture, pygame.Vector2(450, 390), vhsWheelRot)
     blitRotateCenter(screen, wheelTexture, pygame.Vector2(50, 390), vhsWheelRot)
@@ -123,10 +125,13 @@ while running:
     screen.blit(wheelHighlightTexture, pygame.Vector2(50, 390))
 
     #UI
+    pygame.draw.rect(screen, "gray", pygame.Rect(15, 20, 35, 35))
+    pygame.draw.rect(screen, "gray", pygame.Rect(600, 20, 35, 35))
+
     if (player1.item != None):
-        pygame.draw.circle(screen, "black", pygame.Vector2(25, 25), 15) #Draw texture
+        screen.blit(i.image, pygame.Vector2(20, 25))
     if (player2.item != None):
-        pygame.draw.circle(screen, "black", pygame.Vector2(615, 25), 15) #Draw texture
+        screen.blit(i.image, pygame.Vector2(605, 25))
 
     pygame.display.flip()
 
