@@ -95,7 +95,13 @@ class Player:
             self.velocity.y -= self.jumpStrength
             self.isGrounded = False
 
-    def useItem(self):
+    def useItem(self, vhsSpeed):
         if (self.isDead == False and self.item != None):
-            self.item.use()
+            vhsMod = self.item.use(vhsSpeed)
             self.item = None
+            if (type(vhsMod) == None):
+                return vhsSpeed
+            else:
+                return vhsMod
+        else:
+            return vhsSpeed

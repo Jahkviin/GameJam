@@ -1,6 +1,6 @@
 import pygame
 
-class Item:
+class Item():
     global items
     items = []
 
@@ -12,5 +12,5 @@ class Item:
     def claimed(self):
         items.remove(self)
 
-    def use(self): #use the item
-        pass
+    def use(self, vhsSpeed): #use the item
+        return vhsSpeed

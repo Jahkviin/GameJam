@@ -3,6 +3,7 @@ import player
 import object
 import os
 import item
+import item_reverse
 
 # pygame setup
 pygame.init()
@@ -23,11 +24,12 @@ player2 = player.Player(pygame.Rect(screen.get_width()/2, screen.get_height()/2,
 object.Object(pygame.Rect(90, 370, 70, 10), vhsSpeed)
 object.Object(pygame.Rect(40, 350, 30, 30), vhsSpeed)
 object.Object(pygame.Rect(0, 330, 40, 40), vhsSpeed)
-item.Item(pygame.Vector2(240, 370))
-item.Item(pygame.Vector2(470, 370))
+item_reverse.reverse(pygame.Vector2(240, 370))
+item_reverse.reverse(pygame.Vector2(470, 370))
 
 tapeTexture = pygame.image.load(os.path.join("textures", "vhs tape.png"))
 wheelTexture = pygame.image.load(os.path.join("textures", "vhs wheel.png"))
+wheelHighlightTexture = pygame.image.load(os.path.join("textures", "vhs wheel highlight.png"))
 
 #Functions
 def changeVHSspeed(speed):
@@ -58,7 +60,7 @@ while running:
     if keys[pygame.K_w]:
         player1.jump()
     if keys[pygame.K_e]:
-        player1.useItem()
+        vhsSpeed = player1.useItem(vhsSpeed)
 
     if keys[pygame.K_LEFT]:
         player2.move(-1)
@@ -67,7 +69,7 @@ while running:
     if keys[pygame.K_UP]:
         player2.jump()
     if keys[pygame.K_RSHIFT]:
-        player2.useItem()
+        vhsSpeed = player2.useItem(vhsSpeed)
 
     #Temporary for testing
     if keys[pygame.K_j]:
@@ -116,6 +118,9 @@ while running:
 
     blitRotateCenter(screen, wheelTexture, pygame.Vector2(450, 390), vhsWheelRot)
     blitRotateCenter(screen, wheelTexture, pygame.Vector2(50, 390), vhsWheelRot)
+
+    screen.blit(wheelHighlightTexture, pygame.Vector2(450, 390))
+    screen.blit(wheelHighlightTexture, pygame.Vector2(50, 390))
 
     #UI
     if (player1.item != None):
