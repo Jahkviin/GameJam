@@ -12,7 +12,8 @@ class Player:
 
         self.speedLimit = 250 #The fastest speed players can move.
         self.speed = 80 #The acceleration of players.
-        self.decelaration = 0.8 #The deceleration of players (multiplicative).
+        self.airDeceleration = 0.8 #The deceleration of players (multiplicative).
+        self.groundDeceleration = 0.5
         self.gravity = 4 #The gravity strength.
         self.jumpStrength = 150 #Jump height and speed
 
@@ -28,11 +29,14 @@ class Player:
             self.velocity.x = self.velocity.x / self.velocity.x.__abs__() * self.speedLimit
 
     def physicsUpdate(self, dt):
-        self.isGrounded = False
-
         #Horizontal movement
         self.rect.x += self.velocity.x * dt
-        self.velocity.x *= self.decelaration
+        if (self.isGrounded):
+            self.velocity.x *= self.groundDeceleration
+        else:
+            self.velocity.x *= self.airDeceleration
+
+        self.isGrounded = False
 
         #Horizontal collision
         for r in object.objects:
@@ -49,8 +53,8 @@ class Player:
 
         #Vertical collision
         for r in object.objects:
-            if (pygame.Rect.colliderect(r.rect, self.rect)): 
-                if (self.velocity.y > 0):   #Block below
+            if (pygame.Rect.colliderect(r.rect, self.rect.inflate(0, 1))): 
+                if (self.velocity.y >= 0):   #Block below
                     self.isGrounded = True
                     self.velocity.y = 0
                     self.rect.y = r.rect.y - self.rect.height
