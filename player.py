@@ -7,8 +7,9 @@ class Player:
     global players #List of players
     players = []
 
-    def __init__ (self, rect, texture):
-        self.rect = rect
+    def __init__ (self, position, texture):
+        self.position = position
+        self.size = pygame.Vector2(24, 36)
         self.velocity = pygame.Vector2(0,0)
         self.isGrounded = False
         self.item = None
@@ -34,7 +35,7 @@ class Player:
 
     def physicsUpdate(self, dt):
         #Horizontal movement
-        self.rect.x += self.velocity.x * dt
+        self.position.x += self.velocity.x * dt
         if (self.isGrounded):
             self.velocity.x *= self.groundDeceleration
         else:
@@ -45,49 +46,49 @@ class Player:
         if (self.isDead == False):
             #Horizontal collision
             for r in object.objects:
-                if (pygame.Rect.colliderect(r.rect, self.rect)):
+                if (pygame.Rect.colliderect(pygame.Rect(r.position, r.size), pygame.Rect(self.position, self.size))):
                     self.velocity.x = r.velocity
-                    if (r.rect.x > self.rect.x):
-                        self.rect.x = r.rect.x - self.rect.width
+                    if (r.position.x > self.position.x):
+                        self.position.x = r.position.x - self.size.x
                     else:
-                        self.rect.x = r.rect.x + r.rect.width
+                        self.position.x = r.position.x + r.size.x
 
-            if (self.rect.x < 0):
-                self.rect.x = 0
-            elif (self.rect.x + self.rect.width > 640):
-                self.rect.x = 640 - self.rect.width
+            if (self.position.x < 0):
+                self.position.x = 0
+            elif (self.position.x + self.size.x > 640):
+                self.position.x = 640 - self.size.x
 
         #Gravity
         self.velocity.y += self.gravity
-        self.rect.y += self.velocity.y * dt
+        self.position.y += self.velocity.y * dt
 
         if (self.isDead == False):
             #Vertical collision
             for r in object.objects:
-                if (pygame.Rect.colliderect(r.rect, self.rect.inflate(0, 1))): 
+                if (pygame.Rect.colliderect(pygame.Rect(r.position, r.size), pygame.Rect(self.position, self.size).inflate(0, 1))): 
                     if (self.velocity.y >= 0):   #Block below
                         self.isGrounded = True
                         self.velocity.y = 0
-                        self.rect.y = r.rect.y - self.rect.height
+                        self.position.y = r.position.y - self.size.y
                     else:                       #Block above
                         self.velocity.y = 0
-                        self.rect.y = r.rect.y + r.rect.height
+                        self.position.y = r.position.y + r.size.y
 
         #"Is grounded" logic
-        if (self.rect.y + self.rect.height >= 400 and self.isGrounded == False and self.rect.x <= 550 and self.rect.x + self.rect.width >= 110):
+        if (self.position.y + self.size.y >= 400 and self.isGrounded == False and self.position.x <= 550 and self.position.x + self.size.x >= 110):
             self.isGrounded = True
             self.velocity.y = 0
-            self.rect.y = 400 - self.rect.height
+            self.position.y = 400 - self.size.y
 
         #Item pickup logic
         if (self.isDead == False):
             for i in item.items:
-                if (math.hypot(self.rect.x + self.rect.width/2 - i.position.x, self.rect.y + self.rect.height/2 - i.position.y) < 15):
+                if (math.hypot(self.position.x + self.size.x/2 - i.position.x, self.position.y + self.size.y/2 - i.position.y) < 15):
                     self.item = i
                     i.claimed()
 
         #Dead logic
-        if (self.rect.y > 400):
+        if (self.position.y > 400):
             self.isDead = True
 
     def jump(self):

@@ -19,13 +19,13 @@ vhsModTimer = 0
 vhsTapePos = 0
 vhsWheelRot = 0
 
-player1 = player.Player(pygame.Rect(screen.get_width()/2, screen.get_height()/2, 24, 36), pygame.image.load(os.path.join("textures", "neo standing.png")))
-player2 = player.Player(pygame.Rect(screen.get_width()/2, screen.get_height()/2, 24, 36), pygame.image.load(os.path.join("textures", "neo left.png")))
+player1 = player.Player(pygame.Vector2(screen.get_width()/2, screen.get_height()/2), pygame.image.load(os.path.join("textures", "neo standing.png")))
+player2 = player.Player(pygame.Vector2(screen.get_width()/2, screen.get_height()/2), pygame.image.load(os.path.join("textures", "neo left.png")))
 
 #Temp
-object.Object(pygame.Rect(90, 370, 70, 10), vhsSpeed)
-object.Object(pygame.Rect(40, 350, 30, 30), vhsSpeed)
-object.Object(pygame.Rect(0, 330, 40, 40), vhsSpeed)
+object.Object(pygame.Vector2(90, 370), pygame.Vector2(70, 10), vhsSpeed)
+object.Object(pygame.Vector2(40, 350), pygame.Vector2(30, 30), vhsSpeed)
+object.Object(pygame.Vector2(0, 330), pygame.Vector2(40, 40), vhsSpeed)
 item_reverse.reverse(pygame.Vector2(240, 370))
 item_reverse.reverse(pygame.Vector2(470, 370))
 
@@ -93,18 +93,20 @@ while running:
         vhsModTimer -= dt
 
     for o in object.objects:
-        o.rect.x += movement
+        o.position.x += movement
 
     for p in player.players:
         p.physicsUpdate(dt)
         if (p.isGrounded):
-            p.rect.x += movement
+            p.position.x += movement
 
     for i in item.items:
         i.position.x += movement
 
     vhsTapePos += movement
     vhsWheelRot -= movement
+
+    changeVHSspeed(vhsSpeed + dt * 0.25)
 
     # Render game here
     screen.fill("purple")
@@ -124,10 +126,10 @@ while running:
     pygame.draw.rect(screen, "white", pygame.Rect(250, 430, 150, 200)) #White pad
 
     for o in object.objects:
-        pygame.draw.rect(screen, "green", o.rect)
+        pygame.draw.rect(screen, "green", pygame.Rect(o.position, o.size))
 
     for p in player.players:
-        screen.blit(p.texture, p.rect)
+        screen.blit(p.texture, pygame.Rect(p.position, p.size))
 
     for i in item.items:
         screen.blit(i.image, i.position - pygame.Vector2(5, 5))
