@@ -103,3 +103,5 @@ class Player:
                 return vhsSpeed
             else:
                 return vhsMod
+        else:
+            return vhsSpeed
