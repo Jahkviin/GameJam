@@ -1,13 +1,17 @@
 import pygame
+import player
 
 # pygame setup
 pygame.init()
 screen = pygame.display.set_mode((640, 480))
 clock = pygame.time.Clock()
 running = True
-
-player_pos = pygame.Vector2(screen.get_width()/2, screen.get_height()/2)
 dt = 0
+
+#VHS stats
+vhsSpeed = 100
+
+player1 = player.Player(pygame.Vector2(screen.get_width()/2, screen.get_height()/2))
 
 while running:
     for event in pygame.event.get():
@@ -16,23 +20,26 @@ while running:
 
     # Logic here
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_w]:
-        player_pos.y -= 300 * dt
-    if keys[pygame.K_s]:
-        player_pos.y += 300 * dt
     if keys[pygame.K_a]:
-        player_pos.x -= 300 * dt
+        player1.move(-1)
     if keys[pygame.K_d]:
-        player_pos.x += 300 * dt
+        player1.move(1)
+    if keys[pygame.K_w]:
+        player1.jump()
 
+    for p in player.players:
+        p.physicsUpdate(dt)
+        if (p.isGrounded):
+            p.position.x += vhsSpeed * dt
+        
 
-    # RENDER GAME HERE
+    # Render game here
     screen.fill("purple")
 
-    pygame.draw.circle(screen, "red", player_pos, 40)
+    pygame.draw.circle(screen, "red", player1.position, 10)
 
     pygame.display.flip()
 
-    dt = clock.tick(20) / 1000  # limits FPS to 20 and gives the delta time (dt)
+    dt = clock.tick(60) / 1000  # limits FPS and gives the delta time (dt)
 
 pygame.quit()
