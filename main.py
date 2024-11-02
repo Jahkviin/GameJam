@@ -19,7 +19,8 @@ vhsWheelRot = 0
 object.Object(pygame.Rect(90, 370, 70, 10), vhsSpeed)
 object.Object(pygame.Rect(40, 350, 30, 30), vhsSpeed)
 object.Object(pygame.Rect(0, 330, 40, 40), vhsSpeed)
-player1 = player.Player(pygame.Rect(screen.get_width()/2, screen.get_height()/2, 8, 8))
+player1 = player.Player(pygame.Rect(screen.get_width()/2, screen.get_height()/2, 8, 8), "red")
+player2 = player.Player(pygame.Rect(screen.get_width()/2, screen.get_height()/2, 8, 8), "orange")
 
 tapeTexture = pygame.image.load(os.path.join("textures", "vhs tape.png"))
 wheelTexture = pygame.image.load(os.path.join("textures", "vhs wheel.png"))
@@ -52,6 +53,13 @@ while running:
         player1.move(1)
     if keys[pygame.K_w]:
         player1.jump()
+
+    if keys[pygame.K_LEFT]:
+        player2.move(-1)
+    if keys[pygame.K_RIGHT]:
+        player2.move(1)
+    if keys[pygame.K_UP]:
+        player2.jump()
 
     #Temporary for testing
     if keys[pygame.K_j]:

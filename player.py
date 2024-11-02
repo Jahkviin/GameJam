@@ -5,7 +5,7 @@ class Player:
     global players #List of players
     players = []
 
-    def __init__ (self, rect):
+    def __init__ (self, rect, color):
         self.rect = rect
         self.velocity = pygame.Vector2(0,0)
         self.isGrounded = False
@@ -19,17 +19,15 @@ class Player:
 
         self.isDead = False
 
-        self.color = "red"
+        self.color = color
 
         players.append(self)
     
     def move(self, xdir):
         if (self.isDead == False):
-            #Check horizontal collision
             self.velocity.x += xdir * self.speed
-
             if (self.velocity.x.__abs__() > self.speedLimit):
-                self.velocity.x = self.velocity.x / self.velocity.x.__abs__() * self.speedLimit
+                self.velocity.x *= 0.9
 
     def physicsUpdate(self, dt):
         #Horizontal movement
