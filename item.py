@@ -1,6 +1,6 @@
 import pygame
 
-class Item:
+class Item():
     global items
     items = []
 
