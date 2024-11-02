@@ -15,9 +15,16 @@ clock = pygame.time.Clock()
 running = True
 dt = 0
 
+#Items
 itemTypes = [item_reverse.Reverse, item_fastForward.FastForward, item_pause.Pause]
 itemSpawnTimer = 0
 itemSpawnRate = 6
+
+#Parkour sections
+parkourSet = [  [pygame.Rect(-90, 370, 20, 30), pygame.Rect(-130, 330, 20, 70), pygame.Rect(-170, 360, 20, 40)],
+                [pygame.Rect(-110, 370, 40, 30), pygame.Rect(-30, 340, 40, 10), pygame.Rect(-130, 300, 20, 100)],
+                [pygame.Rect(-40, 380, 30, 20), pygame.Rect(-80, 350, 20, 50), pygame.Rect(-90, 380, 10, 20), pygame.Rect(-20, 310, 30, 10), pygame.Rect(-140, 280, 20, 120), pygame.Rect(-230, 300, 20, 100), pygame.Rect(-200, 370, 10, 30), pygame.Rect(-150, 330, 20, 10)]]
+parkourSpawnTimer = 0
 
 #VHS stats
 vhsSpeed = 20
@@ -28,13 +35,6 @@ vhsWheelRot = 0
 
 player1 = player.Player(pygame.Vector2(screen.get_width()/2, screen.get_height()/2), pygame.image.load(os.path.join("textures", "neo standing.png")), pygame.image.load(os.path.join("textures", "neo left.png")), pygame.image.load(os.path.join("textures", "neo left up.png")))
 player2 = player.Player(pygame.Vector2(screen.get_width()/2, screen.get_height()/2), pygame.image.load(os.path.join("textures", "lara croft.png")), pygame.image.load(os.path.join("textures", "lara croft left.png")), pygame.image.load(os.path.join("textures", "lara croft left up.png")))
-
-#Temp
-object.Object(pygame.Vector2(90, 370), pygame.Vector2(70, 10), vhsSpeed)
-object.Object(pygame.Vector2(40, 350), pygame.Vector2(30, 30), vhsSpeed)
-object.Object(pygame.Vector2(0, 330), pygame.Vector2(40, 40), vhsSpeed)
-item_fastForward.FastForward(pygame.Vector2(240, 370))
-item_pause.Pause(pygame.Vector2(470, 370))
 
 #Textures
 tapeTexture = pygame.image.load(os.path.join("textures", "vhs tape.png"))
@@ -87,12 +87,6 @@ while running:
             modVHSspeed = result.x
             vhsModTimer = result.y
 
-    #Temporary for testing
-    if keys[pygame.K_j]:
-        changeVHSspeed(-100)
-    if keys[pygame.K_k]:
-        changeVHSspeed(100)
-
     #Physics/movement and such
     if (vhsModTimer <= 0):
         movement = vhsSpeed * dt
@@ -127,6 +121,18 @@ while running:
             newItem = type(pygame.Vector2(30, 280 + random.randrange(0, 40)))
         else:
             newItem = type(pygame.Vector2(600, 280 + random.randrange(0, 40)))
+
+    #Spawn parkour
+    if (parkourSpawnTimer > 0):
+        if (vhsModTimer > 0):
+            parkourSpawnTimer -= vhsSpeed * modVHSspeed * dt
+        else:
+            parkourSpawnTimer -= vhsSpeed * dt
+    else:
+        parkourBlocks = parkourSet[random.randint(0, parkourSet.__len__()-1)]
+        for r in parkourBlocks:
+            newBlock = object.Object(pygame.Vector2(r.x, r.y), pygame.Vector2(r.width, r.height), vhsSpeed)
+        parkourSpawnTimer = 320
 
     # Render game here
     screen.fill("purple")

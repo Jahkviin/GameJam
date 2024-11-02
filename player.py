@@ -64,8 +64,14 @@ class Player:
 
             if (self.position.x < 0):
                 self.position.x = 0
+                for r in object.objects:
+                    if (pygame.Rect.colliderect(pygame.Rect(r.position, r.size), pygame.Rect(self.position, self.size))):
+                        self.isDead = True #Crushed
             elif (self.position.x + self.size.x > 640):
                 self.position.x = 640 - self.size.x
+                for r in object.objects:
+                    if (pygame.Rect.colliderect(pygame.Rect(r.position, r.size), pygame.Rect(self.position, self.size))):
+                        self.isDead = True #Crushed
 
         #Gravity
         self.velocity.y += self.gravity
