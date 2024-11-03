@@ -58,6 +58,7 @@ while (newStart):
     tapeTexture = pygame.image.load(os.path.join("textures", "vhs tape.png"))
     wheelTexture = pygame.image.load(os.path.join("textures", "vhs wheel.png"))
     wheelHighlightTexture = pygame.image.load(os.path.join("textures", "vhs wheel highlight.png"))
+    bgTexture = pygame.image.load(os.path.join("textures", "synthwave background.png"))
 
     #Functions
     def changeVHSspeed(speed):
@@ -168,7 +169,7 @@ while (newStart):
             parkourSpawnTimer = 320
 
         # Render game here
-        screen.fill("purple")
+        screen.blit(bgTexture, (0,0))
 
         pygame.draw.rect(screen, "gray", pygame.Rect(25, 380, 600, 100)) #Case
 
@@ -179,8 +180,8 @@ while (newStart):
         pygame.draw.rect(screen, "gray", pygame.Rect(25, 380, 75, 100)) #Case edge
         pygame.draw.rect(screen, "gray", pygame.Rect(550, 380, 75, 100)) #Case edge
 
-        pygame.draw.rect(screen, "purple", pygame.Rect(0, 380, 25, 100)) #BG
-        pygame.draw.rect(screen, "purple", pygame.Rect(615, 380, 25, 100)) #BG
+        #pygame.draw.rect(screen, "purple", pygame.Rect(0, 380, 25, 100)) #BG
+        #pygame.draw.rect(screen, "purple", pygame.Rect(615, 380, 25, 100)) #BG
 
         pygame.draw.rect(screen, "white", pygame.Rect(250, 430, 150, 200)) #White pad
 
