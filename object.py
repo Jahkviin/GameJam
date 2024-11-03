@@ -13,3 +13,5 @@ class Object:
 
     def changeVel(self, velocity):
         self.velocity = velocity
+        if (self.position.x > 1000):
+            objects.remove(self)
